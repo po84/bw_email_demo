@@ -1,13 +1,17 @@
 from flask import Flask, request, abort
 from ..email_service.email_service import EmailAccount, EmailService
-from ..email_service.external_api import SendgridAPI
+from ..email_service.external_api import SendgridAPI, MailgunAPI
 
 
 def create_app(test_config=None):
     app = Flask(__name__)
 
     app.config.from_pyfile('settings.py')
-    ext_email_api = SendgridAPI(app.config.get('SENDGRID_API_KEY'))
+    ext_email_service = app.config.get('EXTERNAL_EMAIL_API')
+    if ext_email_service == 'mailgun':
+        ext_email_api = MailgunAPI(app.config.get('MAILGUN_API_KEY'))
+    else:
+        ext_email_api = SendgridAPI(app.config.get('SENDGRID_API_KEY'))
 
     @app.route('/')
     def hi():
