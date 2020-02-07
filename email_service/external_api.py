@@ -3,6 +3,11 @@ import requests
 
 
 class SendgridAPI(object):
+    '''
+    A class that uses Sendgrid's API to send emails.
+
+    ref: https://sendgrid.com/docs/api-reference/
+    '''
     def __init__(self, api_key: str) -> None:
         self.send_mail_endpoint = 'https://api.sendgrid.com/v3/mail/send'
         self.token_string = 'Bearer {}'.format(api_key)
@@ -40,6 +45,11 @@ class SendgridAPI(object):
 
 
 class MailgunAPI:
+    '''
+    A class that uses Mailgun's API to send emails.
+
+    ref: https://documentation.mailgun.com/en/latest/quickstart-sending.html#how-to-start-sending-email
+    '''
     def __init__(self, api_key: str) -> None:
         self.send_mail_endpoint = 'https://api.mailgun.net/v3/sandbox8fa3c3ceac1a4b12aeeb3f202ebe3b68.mailgun.org/messages'
         self.api_key = api_key
