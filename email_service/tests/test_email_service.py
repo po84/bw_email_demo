@@ -37,3 +37,78 @@ class EmailServiceTest(TestCase):
                                  body)
 
         mock_api.send.assert_called_with(recipient, sender, subject, body)
+
+    def test_send_email_call_ext_api_send_with_empty_subject(self):
+        mock_api = mock.create_autospec(SendgridAPI)
+
+        email_service = EmailService(mock_api)
+        recipient = EmailAccount('to@example.com', 'To Me')
+        sender = EmailAccount('from@example.com', 'From You')
+        body = 'body is not empty'
+        email_service.send_email(recipient,
+                                 sender,
+                                 '',
+                                 body)
+
+        mock_api.send.assert_called_with(recipient,
+                                         sender,
+                                         '(no subject)',
+                                         body)
+
+    def test_send_email_call_ext_api_send_with_empty_body(self):
+        mock_api = mock.create_autospec(SendgridAPI)
+
+        email_service = EmailService(mock_api)
+        recipient = EmailAccount('to@example.com', 'To Me')
+        sender = EmailAccount('from@example.com', 'From You')
+        subject = 'Test subject'
+        body = ''
+        self.assertRaises(ValueError,
+                          email_service.send_email,
+                          recipient,
+                          sender,
+                          subject,
+                          body)
+
+    def test_send_email_call_ext_api_send_with_body_containing_html(self):
+        mock_api = mock.create_autospec(SendgridAPI)
+
+        email_service = EmailService(mock_api)
+        recipient = EmailAccount('to@example.com', 'To Me')
+        sender = EmailAccount('from@example.com', 'From You')
+        subject = 'Test subject'
+        body = '<h1>Your Bill</h><p>$10</p>'
+        email_service.send_email(recipient,
+                                 sender,
+                                 subject,
+                                 body)
+
+        mock_api.send.assert_called_with(recipient,
+                                         sender,
+                                         subject,
+                                         'Your Bill $10')
+    # these were used to make sure the API calls work, commented out because
+    # they are not really unit tests
+    # def test_send_email_with_sendgrid(self):
+    #     sendgrid_api = SendgridAPI('')
+    #     email_service = EmailService(sendgrid_api)
+    #     recipient = EmailAccount('potong616@gmail.com', 'Po Tong')
+    #     sender = EmailAccount('po.tmp.test@gmail.com', 'Po Tong')
+    #     subject = 'Test subject'
+    #     body = 'body is not empty'
+    #     email_service.send_email(recipient,
+    #                              sender,
+    #                              subject,
+    #                              body)
+
+    # def test_send_email_with_mailgun(self):
+    #     mailgun_api = MailgunAPI('')
+    #     email_service = EmailService(mailgun_api)
+    #     recipient = EmailAccount('potong616@gmail.com', 'Po Tong')
+    #     sender = EmailAccount('po.tmp.test@gmail.com', 'Po Tong')
+    #     subject = 'Test subject'
+    #     body = 'body is not empty'
+    #     email_service.send_email(recipient,
+    #                              sender,
+    #                              subject,
+    #                              body)
