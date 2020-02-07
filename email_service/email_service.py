@@ -18,6 +18,7 @@ class EmailAccount(object):
     '''
     def __init__(self, email_address: str, name: str) -> None:
         email_address = email_address.strip()
+        # very basic email format check
         if not re.fullmatch(r'[^@]+@[^@]+\.[^@]+', email_address):
             raise ValueError('Invalid email address format')
 
@@ -49,6 +50,7 @@ class EmailService(object):
                    subject: str,
                    body: str) -> bool:
 
+        # feels like all email services do this
         subject = subject.strip()
         if subject == '':
             subject = '(no subject)'
