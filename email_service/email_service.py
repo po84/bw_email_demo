@@ -25,3 +25,4 @@ class EmailService(object):
                    body: str) -> bool:
         # TODO business logic for stripping html from body
         result = self.external_api.send(recipient, sender, subject, body)
+        return True
