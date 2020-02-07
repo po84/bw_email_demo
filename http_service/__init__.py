@@ -13,10 +13,6 @@ def create_app(test_config=None):
     else:
         ext_email_api = SendgridAPI(app.config.get('SENDGRID_API_KEY'))
 
-    @app.route('/')
-    def hi():
-        return 'hi'
-
     @app.route('/email', methods=['POST'])
     def send_email():
         if not request.is_json:
