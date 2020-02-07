@@ -1,4 +1,5 @@
 import re
+from html.parser import HTMLParser
 
 
 class EmailAccount(object):
@@ -29,13 +30,15 @@ class EmailAccount(object):
 
 
 class EmailService(object):
-    ''' A class to pergorm email sending operation
+    ''' A class to perform email sending operation
 
     Attributes
     ----------
     external_api
         api that does the actual email sending
 
+    Raises:
+        ValueError: If body is empty
     '''
     def __init__(self, external_api) -> None:
         self.external_api = external_api
@@ -45,6 +48,35 @@ class EmailService(object):
                    sender: EmailAccount,
                    subject: str,
                    body: str) -> bool:
-        # TODO business logic for stripping html from body
-        result = self.external_api.send(recipient, sender, subject, body)
-        return True
+
+        subject = subject.strip()
+        if subject == '':
+            subject = '(no subject)'
+
+        html_remover = EmailHTMLRemover()
+        html_remover.feed(body)
+
+        body = html_remover.get_data()
+
+        if body == '':
+            raise ValueError('Empty email body')
+
+        return self.external_api.send(recipient, sender, subject, body)
+
+
+class EmailHTMLRemover(HTMLParser):
+    ''' A class to remove HTML tags from email body. This is VERY rudimentary
+    and will remove ALL contents enclosed by angle brackets.
+    '''
+    def __init__(self):
+        self.reset()
+        self.convert_charrefs = True
+        self.data = []
+
+    def handle_data(self, d):
+        cleaned_data = d.strip()
+        if cleaned_data != '':
+            self.data.append(cleaned_data)
+
+    def get_data(self):
+        return ' '.join(self.data)
