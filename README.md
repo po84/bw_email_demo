@@ -25,7 +25,11 @@ Requests for http client calls.
 
 `~/<project-root>$ flask run`
 
-the app also needs api keys from Mailgun and Sendgrid, which should be provided to you
+The app also needs api keys from Mailgun and Sendgrid, which should be provided to you.
+
+You can append the keys to the .env file so the `source .env` step sets these variables for you.
+
+These need to be set as `SENDGRID_API_KEY` and `MAILGUN_API_KEY` in the env var.
 
 ## Description:
 
